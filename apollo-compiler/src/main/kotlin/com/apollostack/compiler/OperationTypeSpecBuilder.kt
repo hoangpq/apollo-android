@@ -1,8 +1,8 @@
 package com.apollostack.compiler
 
-import com.apollostack.compiler.ir.CodeGenerator
 import com.apollostack.compiler.ir.Fragment
 import com.apollostack.compiler.ir.Operation
+import com.apollostack.compiler.ir.PackageAwareGenerator
 import com.apollostack.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -11,11 +11,15 @@ class OperationTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>,
     val generateClasses: Boolean
-) : CodeGenerator {
+) : PackageAwareGenerator {
+  override fun packageName(): String {
+    return operation.path.formatPackageName()
+  }
+
   private val QUERY_TYPE_NAME = operation.operationName.capitalize()
   private val QUERY_VARIABLES_CLASS_NAME = ClassName.get("", "$QUERY_TYPE_NAME.Variables")
 
-  override fun toTypeSpec(): TypeSpec {
+  override fun toTypeSpec(pkgName: String): TypeSpec {
     return TypeSpec.classBuilder(QUERY_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())

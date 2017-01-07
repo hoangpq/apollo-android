@@ -9,13 +9,13 @@ import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder {
   fun build(typeName: String, fields: List<Field>, fragmentSpreads: List<String>,
-      inlineFragments: List<InlineFragment>): TypeSpec =
+      inlineFragments: List<InlineFragment>, fragmentPkg: String): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addFieldAccessorMethods(fields)
           .addInlineFragmentAccessorMethods(inlineFragments)
           .addInnerTypes(fields)
-          .addInnerFragmentTypes(fragmentSpreads)
+          .addInnerFragmentTypes(fragmentSpreads, fragmentPkg)
           .addInlineFragmentTypes(inlineFragments)
           .build()
 
@@ -25,17 +25,17 @@ class SchemaTypeSpecBuilder {
   }
 
   /** Returns a list of fragment types referenced by the provided list of fields */
-  private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>, pkg: String): TypeSpec.Builder {
     if (fragments.isNotEmpty()) {
       addMethod(newFragmentAccessorMethodSpec())
-      addType(newFragmentInterfaceSpec(fragments))
+      addType(newFragmentInterfaceSpec(fragments, pkg))
     }
     return this
   }
 
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
-    val typeSpecs = fields.filter(Field::isNonScalar).map(Field::toTypeSpec)
+    val typeSpecs = fields.filter(Field::isNonScalar).map { f -> f.toTypeSpec() }
     return addTypes(typeSpecs)
   }
 
@@ -65,12 +65,12 @@ class SchemaTypeSpecBuilder {
             .build()
 
     /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
-    private fun newFragmentInterfaceSpec(fragments: List<String>): TypeSpec =
+    private fun newFragmentInterfaceSpec(fragments: List<String>, pkg: String): TypeSpec =
         TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addMethods(fragments.map {
               MethodSpec.methodBuilder(it.decapitalize())
-                  .returns(ClassName.get("", it.capitalize()))
+                  .returns(ClassName.get(pkg, it.capitalize()))
                   .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                   .build()
             })

@@ -9,13 +9,13 @@ data class InlineFragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec =
+  override fun toTypeSpec(pkg: String): TypeSpec =
     TypeSpec.interfaceBuilder(interfaceName())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addMethods(fields.map(Field::toMethodSpec))
         .addTypes(fields.filter(Field::isNonScalar).map { field ->
           SchemaTypeSpecBuilder().build(field.normalizedName(), field.fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-              field.inlineFragments ?: emptyList())
+              field.inlineFragments ?: emptyList(), pkg)
         })
         .build()
 

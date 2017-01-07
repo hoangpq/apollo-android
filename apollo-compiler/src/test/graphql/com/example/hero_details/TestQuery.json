@@ -58,7 +58,8 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": []
+      "fragmentsReferenced": [],
+      "path": "src/test/graphql/com/example/hero_details/TestQuery.json"
     }
   ],
   "fragments": [],

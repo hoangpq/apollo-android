@@ -11,11 +11,12 @@ data class Operation(
     val operationType: String,
     val variables: List<Variable>,
     val source: String,
-    val fields: List<Field>
+    val fields: List<Field>,
+    val path: String
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec =
+  override fun toTypeSpec(pkgName: String): TypeSpec =
     SchemaTypeSpecBuilder()
-        .build(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList())
+        .build(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), pkgName)
         .toBuilder()
         .addSuperinterface(ClassName.get(Operation.Data::class.java))
         .build()

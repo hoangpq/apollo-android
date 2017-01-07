@@ -19,7 +19,8 @@
       ],
       "fragmentsReferenced": [
         "HeroDetails"
-      ]
+      ],
+      "path": "src/test/graphql/com/example/simple_fragment/TestQuery.json"
     }
   ],
   "fragments": [

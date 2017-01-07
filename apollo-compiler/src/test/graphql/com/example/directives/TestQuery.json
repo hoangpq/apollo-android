@@ -22,7 +22,8 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": []
+      "fragmentsReferenced": [],
+      "path": "src/test/graphql/com/example/directives/TestQuery.json"
     }
   ],
   "fragments": [],

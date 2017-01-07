@@ -17,8 +17,8 @@ data class Fragment(
     val fragmentsReferenced: List<String>
 ) : CodeGenerator {
   /** Returns the Java interface that represents this Fragment object. */
-  override fun toTypeSpec(): TypeSpec =
-      SchemaTypeSpecBuilder().build(interfaceTypeName(), fields, fragmentSpreads, inlineFragments)
+  override fun toTypeSpec(pkg: String): TypeSpec =
+      SchemaTypeSpecBuilder().build(interfaceTypeName(), fields, fragmentSpreads, inlineFragments, pkg)
           .toBuilder()
           .addFragmentDefinition(this)
           .build()

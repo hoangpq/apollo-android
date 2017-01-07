@@ -17,9 +17,9 @@ data class Field(
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec =
+  override fun toTypeSpec(pkgName: String): TypeSpec =
       SchemaTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList())
+          inlineFragments ?: emptyList(), pkgName)
 
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(responseName)
